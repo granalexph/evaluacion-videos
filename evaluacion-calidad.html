@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación de Calidad - Fase 5</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 800px; margin: 2rem auto; padding: 1rem; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { border: 1px solid #ddd; padding: 0.75rem; text-align: left; }
+  th { background: #f4f4f4; }
+  input[type="number"] { width: 70px; padding: 0.4rem; }
+  .result { margin-top: 1.5rem; padding: 1rem; background: #f9f9f9; border-radius: 8px; }
+  .ok { color: #0a7c0a; font-weight: bold; }
+  .fail { color: #c00; font-weight: bold; }
+  .min { font-size: 0.85em; color: #666; }
+</style>
+</head>
+<body>
+<h1>Evaluación de calidad · Fase 5</h1>
+<p>Califica cada área del 0 al 10.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Área</th>
+      <th>Peso</th>
+      <th>Mínimo</th>
+      <th>Puntuación</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Narrativa</td>
+      <td>30%</td>
+      <td class="min">8/10</td>
+      <td><input type="number" id="narrativa" min="0" max="10" step="0.1" value="8"></td>
+    </tr>
+    <tr>
+      <td>Ritmo y retención</td>
+      <td>25%</td>
+      <td class="min">8/10</td>
+      <td><input type="number" id="ritmo" min="0" max="10" step="0.1" value="8"></td>
+    </tr>
+    <tr>
+      <td>Visuales</td>
+      <td>20%</td>
+      <td class="min">7/10</td>
+      <td><input type="number" id="visuales" min="0" max="10" step="0.1" value="7"></td>
+    </tr>
+    <tr>
+      <td>Diseño sonoro</td>
+      <td>15%</td>
+      <td class="min">7/10</td>
+      <td><input type="number" id="sonido" min="0" max="10" step="0.1" value="7"></td>
+    </tr>
+    <tr>
+      <td>Acabado técnico</td>
+      <td>10%</td>
+      <td class="min">8/10</td>
+      <td><input type="number" id="tecnico" min="0" max="10" step="0.1" value="8"></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="result">
+  <p><strong>Puntuación ponderada:</strong> <span id="total">0</span>/100</p>
+  <p><strong>Mínimos cumplidos:</strong> <span id="mins">—</span></p>
+  <p><strong>Apto para revisión final:</strong> <span id="apto">—</span></p>
+  <p style="font-size:0.9em; color:#555;">Apto = total ≥ 80 y todos los mínimos cumplidos (errores críticos se revisan aparte).</p>
+</div>
+
+<script>
+const areas = [
+  { id: 'narrativa', peso: 0.30, min: 8 },
+  { id: 'ritmo',     peso: 0.25, min: 8 },
+  { id: 'visuales',  peso: 0.20, min: 7 },
+  { id: 'sonido',    peso: 0.15, min: 7 },
+  { id: 'tecnico',   peso: 0.10, min: 8 }
+];
+
+function calc() {
+  let suma = 0;
+  let minsOk = true;
+
+  areas.forEach(a => {
+    const val = parseFloat(document.getElementById(a.id).value) || 0;
+    suma += val * a.peso;
+    if (val < a.min) minsOk = false;
+  });
+
+  const total = Math.round(suma * 10 * 10) / 10; // 1 decimal
+  const apto = total >= 80 && minsOk;
+
+  document.getElementById('total').textContent = total.toFixed(1);
+  document.getElementById('mins').textContent = minsOk ? 'Sí' : 'No';
+  document.getElementById('mins').className = minsOk ? 'ok' : 'fail';
+  document.getElementById('apto').textContent = apto ? 'SÍ' : 'NO';
+  document.getElementById('apto').className = apto ? 'ok' : 'fail';
+}
+
+areas.forEach(a => {
+  document.getElementById(a.id).addEventListener('input', calc);
+});
+
+calc();
+</script>
+</body>
+</html>
